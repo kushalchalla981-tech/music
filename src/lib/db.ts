@@ -133,3 +133,17 @@ export async function searchAll(query: string) {
 
   return { tracks, artists }
 }
+
+export async function getAllTracks(): Promise<Track[]> {
+  const { data, error } = await supabase
+    .from("tracks")
+    .select(`
+      *,
+      artist:artists(*),
+      genre:genres(*)
+    `)
+    .order("created_at", { ascending: false })
+
+  if (error) throw error
+  return data || []
+}
